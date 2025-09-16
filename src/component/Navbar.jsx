@@ -11,7 +11,7 @@ const Navbar = () => {
         { name: 'Generate', path: '/generate' },
     ];
     return (
-        <nav className="bg-[#FDE68A] text-black px-4 py-3 flex items-center justify-between shadow-md md:px-10">
+        <nav className="fixed top-0 left-0 w-full bg-[#FDE68A] text-black px-4 py-3 flex items-center justify-between shadow-md md:px-50 z-50">
             <div className="flex items-center">
                 <span className="text-xl font-semibold tracking-wide flex items-center">
                     <img src={Logo} alt="Logo" className="h-full w-full mr-2" />

@@ -7,7 +7,7 @@ function Home() {
     return (
         <div className="min-h-screen">
             {/* Hero Section */}
-            <div className="flex flex-col md:flex-row items-center justify-center w-full h-[80vh] max-w-none mx-auto py-0 px-0 gap-0">
+            <div className="flex flex-col md:flex-row items-center justify-center w-full h-[80vh] max-w-none mx-auto py-0 px-0 gap-0 pt-20">
                 {/* Left side: Text and Button */}
                 <div className="md:w-1/2 w-full flex flex-col justify-center items-start md:pl-32 md:pr-8 px-6">
                     <h1 className="text-4xl md:text-6xl font-bold mb-6 text-gray-900">

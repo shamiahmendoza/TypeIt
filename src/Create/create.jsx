@@ -2,95 +2,106 @@ import React, { useState } from 'react';
 import templates from './templates';
 import TemplateTile from './component/templateTile';
 import PaperTile from './component/paperTile';
+import MyEditor from './component/richTextEditor';
 
-function Create() {
+const Create = () => {
     const [selectedTemplates, setSelectedTemplates] = useState([null, null]);
-    const [letters, setLetters] = useState(['', '']);
+    const [leftTextBoxes, setLeftTextBoxes] = useState([]);
+    const [rightTextBoxes, setRightTextBoxes] = useState([]);
+    const [activeBox, setActiveBox] = useState(null);
 
-    const handleSelectTemplate = (template) => {
-        if (!selectedTemplates[0]) {
-            setSelectedTemplates([template, null]);
-        } else if (!selectedTemplates[1]) {
-            setSelectedTemplates([selectedTemplates[0], template]);
+    // Get the value of the active box
+    let editorValue = '';
+    if (activeBox) {
+        const { side, idx } = activeBox;
+        if (side === 'left' && leftTextBoxes[idx]) editorValue = leftTextBoxes[idx].text;
+        if (side === 'right' && rightTextBoxes[idx]) editorValue = rightTextBoxes[idx].text;
+    }
+
+    // Update the active box when editor changes
+    const handleEditorChange = (newValue) => {
+        if (!activeBox) return;
+        const { side, idx } = activeBox;
+        if (side === 'left') {
+            const updated = [...leftTextBoxes];
+            updated[idx].text = newValue;
+            setLeftTextBoxes(updated);
+        } else {
+            const updated = [...rightTextBoxes];
+            updated[idx].text = newValue;
+            setRightTextBoxes(updated);
         }
     };
 
-    const handleLetterChange = (index, value) => {
-        const updated = [...letters];
-        updated[index] = value;
-        setLetters(updated);
-    };
-
-    const handlePrint = () => {
-        window.print();
+    const handleSelectTemplate = (template, side) => {
+        const updated = [...selectedTemplates];
+        updated[side] = template;
+        setSelectedTemplates(updated);
     };
 
     return (
-        <div className="flex min-h-screen bg-[#FAFAFA]">
-            {/* Templates Sidebar */}
-            <aside className="w-60 h-auto bg-white border-r px-6 py-10">
-                <h2 className="text-[#3B82F6] font-bold mb-4 text-center">Templates</h2>
-                {templates.map(tpl => (
-                    <TemplateTile key={tpl.id} template={tpl} onSelect={handleSelectTemplate} />
-                ))}
-            </aside>
-            {/* Main Editor */}
-            <main className="flex-1 flex flex-col items-center py-8">
-                {/* Toolbar above PaperTile */}
-                <div className="flex items-center justify-between w-[700px] bg-white rounded-full shadow px-4 py-2 mb-4">
-                    <div className="flex items-center gap-2">
-                        <input type="text" value="Arial" readOnly className="border rounded px-2 py-1 w-24 text-sm" />
-                        <button className="bg-gray-100 px-2 py-1 rounded text-lg">-</button>
-                        <span className="px-2">50</span>
-                        <button className="bg-gray-100 px-2 py-1 rounded text-lg">+</button>
-                        <button className="bg-gray-100 px-2 py-1 rounded text-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-                        </button>
-                        <button className="bg-gray-100 px-2 py-1 rounded text-lg font-bold">B</button>
-                        <button className="bg-gray-100 px-2 py-1 rounded text-lg italic font-bold">I</button>
-                        <button className="bg-gray-100 px-2 py-1 rounded text-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
-                        </button>
-                    </div>
-                    <button
-                        className="bg-[#3B82F6] text-white px-6 py-2 rounded-full font-semibold shadow text-base"
-                        onClick={handlePrint}
-                    >
-                        Download
-                    </button>
+        <div className="flex flex-col min-h-screen bg-[#FAFAFA] overflow-hidden pt-20">
+            {/* Templates section: horizontal scroll at the top */}
+            <aside
+                className="
+                    w-full
+                    bg-white
+                    border-b
+                    px-4
+                    py-6
+                    overflow-x-auto
+                    flex-shrink-0
+                    "
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    overflowX: 'auto',
+                    overflowY: 'hidden',
+                }}
+            >
+                <h2 className="text-[#3B82F6] font-bold mb-6 text-center">Templates</h2>
+                <div
+                    className="
+                        flex
+                        flex-row
+                        gap-6
+                        items-center
+                        w-full
+                        "
+                    style={{
+                        overflowX: 'auto',
+                        overflowY: 'hidden',
+                        scrollSnapType: 'x mandatory',
+                    }}
+                >
+                    {templates.map((tpl, idx) => (
+                        <React.Fragment key={idx}>
+                            <TemplateTile template={tpl} onSelect={() => handleSelectTemplate(tpl, 0)} />
+                            <TemplateTile template={tpl} onSelect={() => handleSelectTemplate(tpl, 1)} />
+                        </React.Fragment>
+                    ))}
                 </div>
-                {/* Bondpaper */}
+            </aside>
+            {/* Main content */}
+            <main className="flex-1 flex flex-col items-center py-8 overflow-hidden">
+                {/* RTE above PaperTile */}
+                {/* <div className="w-full max-w-2xl mb-6">
+                    <MyEditor value={editorValue} onChange={handleEditorChange} readOnly={!activeBox} />
+                </div> */}
                 <PaperTile
-                    left={
-                        <div>
-                            {selectedTemplates[0] && (
-                                <img src={selectedTemplates[0].image} alt="" className="w-16 h-20 mb-2" />
-                            )}
-                            <textarea
-                                className="w-full h-80 border rounded p-2"
-                                placeholder="Click to start writing..."
-                                value={letters[0]}
-                                onChange={e => handleLetterChange(0, e.target.value)}
-                            />
-                        </div>
-                    }
-                    right={
-                        <div>
-                            {selectedTemplates[1] && (
-                                <img src={selectedTemplates[1].image} alt="" className="w-16 h-20 mb-2" />
-                            )}
-                            <textarea
-                                className="w-full h-80 border rounded p-2"
-                                placeholder="Click to start writing..."
-                                value={letters[1]}
-                                onChange={e => handleLetterChange(1, e.target.value)}
-                            />
-                        </div>
-                    }
+                    leftTemplate={selectedTemplates[0]}
+                    rightTemplate={selectedTemplates[1]}
+                    leftTextBoxes={leftTextBoxes}
+                    setLeftTextBoxes={setLeftTextBoxes}
+                    rightTextBoxes={rightTextBoxes}
+                    setRightTextBoxes={setRightTextBoxes}
+                    activeBox={activeBox}
+                    setActiveBox={setActiveBox}
                 />
             </main>
         </div>
     );
-}
+};
 
 export default Create;

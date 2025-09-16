@@ -10,11 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@editorjs/editorjs": "^2.31.0",
+    "@editorjs/header": "^2.8.8",
+    "@editorjs/list": "^2.0.8",
     "@tailwindcss/vite": "^4.1.13",
     "qrcode.react": "^4.2.0",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-qr-code": "^2.0.18",
+    "react-quill": "^2.0.0",
+    "react-rnd": "^10.5.2",
     "react-router-dom": "^7.9.1",
     "tailwindcss": "^4.1.13"
   },

@@ -60,7 +60,7 @@ const handleDownload = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center py-10 px-2">
+        <div className="min-h-screen flex flex-col items-center py-10 px-2 pt-30">
             <h1 className="text-2xl md:text-3xl font-bold mb-8 text-center">Start creating QR Code</h1>
             <div className="flex flex-col lg:flex-row gap-8 w-full max-w-6xl mb-8">
                 {/* Input and Button */}

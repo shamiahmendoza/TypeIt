@@ -15,7 +15,7 @@ function App() {
         <Route path="/create" element={<Create />} />
         <Route path="/generate" element={<Generate />} />
       </Routes>
-      <Footer />
+      {/* <Footer /> */}
     </Router>
   );
 }
